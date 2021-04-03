@@ -14,7 +14,6 @@ public class FixRateJobRunner extends JobRunner{
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
     private WrappedRunnable runnable;
     private ScheduledFuture<?> future;
-    private JobResponseHandler handler;
 
     public FixRateJobRunner(ScheduleMode scheduleMode,
                             List<String> cmdList,
@@ -76,7 +75,7 @@ public class FixRateJobRunner extends JobRunner{
     }
 
     @Override
-    public void responseHandler(JobResponseHandler handler) {
+    public void setResponseHandler(JobResponseHandler handler) {
         this.handler = handler;
     }
 

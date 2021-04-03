@@ -9,6 +9,7 @@ public abstract class JobRunner {
     protected final ScheduleMode scheduleMode;
     protected final List<String> cmdList;
     protected Shell.ShellCommandExecutor shell;
+    protected JobResponseHandler handler;
 
     protected abstract void init();
 
@@ -16,7 +17,7 @@ public abstract class JobRunner {
 
     public abstract void waitComplete();
 
-    public abstract void responseHandler(JobResponseHandler handler);
+    public abstract void setResponseHandler(JobResponseHandler handler);
 
     public abstract void stop();
 

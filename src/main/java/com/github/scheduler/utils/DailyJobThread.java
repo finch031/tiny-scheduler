@@ -11,6 +11,10 @@ public abstract class DailyJobThread implements Runnable{
 
     private static final long JOIN_TIME = 90 * 1000;
     private Thread thread;
+    private final String threadName;
+    private final long executeTimeStamp;
+    // 0-未执行,1-已执行
+    private int jobStatus;
     private final CountDownLatch2 waitPoint = new CountDownLatch2(1);
     private volatile AtomicBoolean hasNotified = new AtomicBoolean(false);
     private volatile boolean stopped = false;
@@ -19,18 +23,20 @@ public abstract class DailyJobThread implements Runnable{
     // make it able to restart the thread
     private final AtomicBoolean started = new AtomicBoolean(false);
 
-    public DailyJobThread(){}
-
-    public abstract String getThreadName();
+    public DailyJobThread(String threadName,long executeTimeStamp){
+        this.threadName = threadName;
+        this.executeTimeStamp = executeTimeStamp;
+        this.jobStatus = 0;
+    }
 
     public void start() {
-        LOG.info("Try to start service thread:{} started:{} lastThread:{}", getThreadName(), started.get(), thread);
+        LOG.info("Try to start thread:{} started:{} lastThread:{}", threadName, started.get(), thread);
         if (!started.compareAndSet(false, true)) {
             return;
         }
 
         stopped = false;
-        this.thread = new Thread(this, getThreadName());
+        this.thread = new Thread(this, threadName);
         this.thread.setDaemon(isDaemon);
         this.thread.start();
     }
@@ -40,13 +46,13 @@ public abstract class DailyJobThread implements Runnable{
     }
 
     public void shutdown(final boolean interrupt) {
-        LOG.info("Try to shutdown service thread:{} started:{} lastThread:{}", getThreadName(), started.get(), thread);
+        LOG.info("Try to shutdown service thread:{} started:{} lastThread:{}",threadName, started.get(), thread);
         if (!started.compareAndSet(true, false)) {
             return;
         }
 
         this.stopped = true;
-        LOG.info("shutdown thread " + this.getThreadName() + " interrupt " + interrupt);
+        LOG.info("shutdown thread " + threadName + " interrupt " + interrupt);
 
         if (hasNotified.compareAndSet(false, true)) {
             // notify
@@ -60,18 +66,13 @@ public abstract class DailyJobThread implements Runnable{
 
             long beginTime = System.currentTimeMillis();
             if (!this.thread.isDaemon()) {
-                this.thread.join(this.getJoinTime());
+                this.thread.join(JOIN_TIME);
             }
             long elapsedTime = System.currentTimeMillis() - beginTime;
-            LOG.info("join thread " + this.getThreadName() + " elapsed time(ms) " + elapsedTime + " "
-                    + this.getJoinTime());
+            LOG.info("join thread " + threadName + " elapsed time(ms) " + elapsedTime);
         } catch (InterruptedException e) {
             LOG.error("Interrupted", e);
         }
-    }
-
-    public long getJoinTime() {
-        return JOIN_TIME;
     }
 
     public void makeStop() {
@@ -79,7 +80,7 @@ public abstract class DailyJobThread implements Runnable{
             return;
         }
         this.stopped = true;
-        LOG.info("make stop thread " + this.getThreadName());
+        LOG.info("make stop thread " + threadName);
     }
 
     public void wakeup() {

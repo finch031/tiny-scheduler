@@ -1,5 +1,6 @@
 package com.github.scheduler.utils;
 
+import java.time.LocalTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -38,7 +39,16 @@ public class UtilsTest {
         System.out.println(cal.getTimeInMillis());
 
 
+        LocalTime localTime = LocalTime.parse("01:15:03");
+        System.out.println(localTime.toSecondOfDay());
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR_OF_DAY,24);
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        System.out.println(calendar.getTimeInMillis());
 
     }
 }

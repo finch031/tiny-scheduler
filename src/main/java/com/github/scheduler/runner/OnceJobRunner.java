@@ -73,11 +73,13 @@ public class OnceJobRunner extends JobRunner{
         }catch (Exception ex){
             ex.printStackTrace();
         }
+
+        handler.handler(jobResponse);
     }
 
     @Override
-    public void responseHandler(JobResponseHandler handler) {
-        handler.handler(jobResponse);
+    public void setResponseHandler(JobResponseHandler handler) {
+        this.handler = handler;
     }
 
     @Override

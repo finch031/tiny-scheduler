@@ -3,6 +3,8 @@ package com.github.scheduler.utils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -105,6 +107,78 @@ public final class Utils {
         Date date = new Date(timeStamp);
         return sdf.format(date);
     }
+
+    /**
+     * 获取每日开始时间戳
+     * */
+    public static long dailyStartTimeStamp(){
+        // 获取当前日期
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * 获取下一天的开始时间戳
+     * */
+    public static long nextDayStartTimeStamp(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR_OF_DAY,24);
+        calendar.set(Calendar.HOUR_OF_DAY,0);
+        calendar.set(Calendar.MINUTE,0);
+        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.MILLISECOND,0);
+        return calendar.getTimeInMillis();
+    }
+
+    /**
+     * 获取指定时间在一天中的第N秒.
+     * @param timeStr 时间字符串,如: 01:15:10
+     * */
+    public static int theSecondOfDay(String timeStr){
+        LocalTime localTime = LocalTime.parse(timeStr);
+        return localTime.toSecondOfDay();
+    }
+
+    /**
+     * Given a time expressed in milliseconds, append the time formatted as
+     * "hh[:mm[:ss]]".
+     *
+     * @param buf    Buffer to append to
+     * @param millis Milliseconds
+     */
+    public static void appendPosixTime(StringBuilder buf, int millis) {
+        if (millis < 0) {
+            buf.append('-');
+            millis = -millis;
+        }
+        int hours = millis / 3600000;
+        buf.append(hours);
+        millis -= hours * 3600000;
+        if (millis == 0) {
+            return;
+        }
+        buf.append(':');
+        int minutes = millis / 60000;
+        if (minutes < 10) {
+            buf.append('0');
+        }
+        buf.append(minutes);
+        millis -= minutes * 60000;
+        if (millis == 0) {
+            return;
+        }
+        buf.append(':');
+        int seconds = millis / 1000;
+        if (seconds < 10) {
+            buf.append('0');
+        }
+        buf.append(seconds);
+    }
+
 
     /**
      * Ensures that an object reference passed as a parameter to the calling method is not null.

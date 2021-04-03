@@ -277,14 +277,14 @@ public class TinyScheduler {
 
         System.out.println(jobRunner.printCmdList());
 
-        jobRunner.start();
-
-        jobRunner.responseHandler(new JobResponseHandler() {
+        jobRunner.setResponseHandler(new JobResponseHandler() {
             @Override
             public void handler(JobResponse jobResponse) {
                 System.out.println(jobResponse);
             }
         });
+
+        jobRunner.start();
 
         jobRunner.waitComplete();
 
