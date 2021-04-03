@@ -6,10 +6,13 @@ import com.github.scheduler.utils.DailyJobThread;
 import com.github.scheduler.utils.ScheduleMode;
 import com.github.scheduler.utils.Shell;
 import com.github.scheduler.utils.Utils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
 public class DailyFixTimeJobRunner extends JobRunner{
+    private static final Logger LOG = LogManager.getLogger(DailyFixTimeJobRunner.class);
     private final String executeTime;
     private boolean jobExecuteFlag;
 
@@ -36,7 +39,7 @@ public class DailyFixTimeJobRunner extends JobRunner{
             long dailyExecuteTimeStamp = Utils.dailyStartTimeStamp() + theSecondOfDay;
 
             if(!jobExecuteFlag && System.currentTimeMillis() >= dailyExecuteTimeStamp){
-                DailyJobThread dailyJobThread = new DailyJobThread("daily_fix_time_job",9) {
+                DailyJobThread dailyJobThread = new DailyJobThread("daily_fixed_time_job") {
                     @Override
                     public void run() {
                         try{
@@ -73,7 +76,7 @@ public class DailyFixTimeJobRunner extends JobRunner{
 
                 StringBuilder sb = new StringBuilder();
                 Utils.appendPosixTime(sb,(int)millsDelta);
-                System.out.println("time to wait before next execute: " + sb.toString());
+                LOG.info("time to wait before next execute: {}",sb.toString());
 
                 Utils.sleepQuietly(60 * 1000L);
             }

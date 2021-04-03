@@ -231,8 +231,8 @@ public abstract class Shell {
             //the timeout thread handling
             //taken care in finally block
             if (exitCode != 0) {
-                // LOG.error("exec error, exit code:{} ,errMsg:{}", exitCode, errMsg.toString());
-                throw new ExitCodeException(exitCode, errMsg.toString());
+                LOG.error("exec error, exit code:{} ,errMsg:{}", exitCode, errMsg.toString());
+                // throw new ExitCodeException(exitCode, errMsg.toString());
             }
         } catch (InterruptedException ie) {
             InterruptedIOException iie = new InterruptedIOException(ie.toString());

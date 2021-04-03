@@ -3,11 +3,14 @@ package com.github.scheduler.runner;
 import com.github.scheduler.model.JobResponse;
 import com.github.scheduler.model.JobResponseHandler;
 import com.github.scheduler.utils.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.*;
 
 public class FixRateJobRunner extends JobRunner{
+    private static final Logger LOG = LogManager.getLogger(FixRateJobRunner.class);
     private final long initialDelay;
     private final long period;
     private final TimeUnit timeUnit;
@@ -62,16 +65,17 @@ public class FixRateJobRunner extends JobRunner{
                     this.initialDelay,
                     this.period,
                     this.timeUnit);
-
     }
 
     @Override
     public void waitComplete() {
+        /*
         while (true){
             long remainingDelay = future.getDelay(TimeUnit.SECONDS);
-            System.out.println("remaining delay:" + remainingDelay);
+            LOG.info("remaining delay:{}",remainingDelay);
             Utils.sleepQuietly(5 * 1000);
         }
+        */
     }
 
     @Override
@@ -81,6 +85,5 @@ public class FixRateJobRunner extends JobRunner{
 
     @Override
     public void stop() {
-        executorService.shutdown();
     }
 }

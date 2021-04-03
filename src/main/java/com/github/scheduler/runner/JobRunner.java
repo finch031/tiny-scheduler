@@ -46,5 +46,4 @@ public abstract class JobRunner {
     public Shell getShell(){
         return this.shell;
     }
-
 }

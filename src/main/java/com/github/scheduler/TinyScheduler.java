@@ -8,8 +8,9 @@ import com.github.scheduler.runner.JobRunner;
 import com.github.scheduler.runner.OnceJobRunner;
 import com.github.scheduler.utils.ScheduleMode;
 import com.github.scheduler.utils.Utils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,8 @@ import static com.github.scheduler.utils.Utils.paramIndexSearch;
  *
  * */
 public class TinyScheduler {
+    private static final Logger LOG = LogManager.getLogger(TinyScheduler.class);
+
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private static final String USAGE =
@@ -197,7 +200,8 @@ public class TinyScheduler {
         if(scheduleModeIndex != -1){
             String scheduleModeStr = args[scheduleModeIndex+1];
             if(scheduleModeStr.equals("1") || scheduleModeStr.equals("2") ||
-               scheduleModeStr.equals("3") || scheduleModeStr.equals("4")){
+               scheduleModeStr.equals("3") || scheduleModeStr.equals("4") ||
+               scheduleModeStr.equals("5")){
                 scheduleModeCode = Integer.parseInt(scheduleModeStr);
             }else {
                 printUsageAndExit("error: schedule_mode is invalid!");
@@ -226,7 +230,7 @@ public class TinyScheduler {
 
         // 运行任务
         JobRunner jobRunner = null;
-
+        // 调度模式
         ScheduleMode scheduleMode;
         switch (scheduleModeCode){
             case 1 :
@@ -260,36 +264,43 @@ public class TinyScheduler {
 
                 break;
             default:
-                scheduleMode = null;
+                printUsageAndExit("error: schedule_mode is invalid!");
         }
-
 
         return jobRunner;
     }
 
-
     public static void main(String[] args){
-        if(args.length < 1){
-            printUsageAndExit("error: args length is less than 1!");
+        if(args.length < 4){
+            printUsageAndExit("error: args length is not enough!");
         }
 
         JobRunner jobRunner = cmdParser(args);
 
-        System.out.println(jobRunner.printCmdList());
+        if(jobRunner == null){
+            printUsageAndExit("error: job runner not support yet! ");
+        }else{
+            LOG.info("job command line: \n{}",jobRunner.printCmdList());
 
-        jobRunner.setResponseHandler(new JobResponseHandler() {
-            @Override
-            public void handler(JobResponse jobResponse) {
-                System.out.println(jobResponse);
-            }
-        });
+            // job response handler logic.
+            jobRunner.setResponseHandler(new JobResponseHandler() {
+                @Override
+                public void handler(JobResponse jobResponse) {
+                    System.out.println(jobResponse);
+                    LOG.info(jobResponse);
+                    //TODO
+                }
+            });
 
-        jobRunner.start();
+            // 启动任务.
+            jobRunner.start();
 
-        jobRunner.waitComplete();
+            // 等待任务.
+            jobRunner.waitComplete();
 
-        // jobRunner.stop();
-
+            // 结束任务.
+            jobRunner.stop();
+        }
     }
 
 }

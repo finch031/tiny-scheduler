@@ -12,9 +12,6 @@ public abstract class DailyJobThread implements Runnable{
     private static final long JOIN_TIME = 90 * 1000;
     private Thread thread;
     private final String threadName;
-    private final long executeTimeStamp;
-    // 0-未执行,1-已执行
-    private int jobStatus;
     private final CountDownLatch2 waitPoint = new CountDownLatch2(1);
     private volatile AtomicBoolean hasNotified = new AtomicBoolean(false);
     private volatile boolean stopped = false;
@@ -23,10 +20,8 @@ public abstract class DailyJobThread implements Runnable{
     // make it able to restart the thread
     private final AtomicBoolean started = new AtomicBoolean(false);
 
-    public DailyJobThread(String threadName,long executeTimeStamp){
+    public DailyJobThread(String threadName){
         this.threadName = threadName;
-        this.executeTimeStamp = executeTimeStamp;
-        this.jobStatus = 0;
     }
 
     public void start() {
