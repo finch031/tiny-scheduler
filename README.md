@@ -1,2 +1,2 @@
-   tiny java cmd based scheduler
+   tiny cmd based java scheduler
    
