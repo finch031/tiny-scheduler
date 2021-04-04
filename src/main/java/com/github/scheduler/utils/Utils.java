@@ -256,7 +256,7 @@ public final class Utils {
             long temp = transMillis % MILLIS_ONE_DAY;
             long daysNum = (transMillis - temp) / MILLIS_ONE_DAY;
             buf.append(daysNum);
-            buf.append("days,");
+            buf.append(" days,");
             millis = (int)(transMillis - daysNum * MILLIS_ONE_DAY);
         }else{
             millis = (int)transMillis;
