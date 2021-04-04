@@ -142,8 +142,8 @@ public class TinyScheduler {
         return dayInWeeksList;
     }
 
-    private static List<Date> getDatesParam(String[] args){
-        List<Date> datesList = new ArrayList<>();
+    private static List<String> getDatesParam(String[] args){
+        List<String> datesList = new ArrayList<>();
         int index = paramIndexSearch(args,"---dates");
         if(index != -1){
             String tempStr = args[index+1];
@@ -153,7 +153,7 @@ public class TinyScheduler {
                 if(match){
                     Date date = Utils.dateParse("yyyy-MM-dd",s);
                     if(date != null){
-                        datesList.add(date);
+                        datesList.add(s);
                     }else{
                         printUsageAndExit("error: date is invalid: " + s);
                     }
@@ -256,9 +256,9 @@ public class TinyScheduler {
                 break;
             case 5:
                 scheduleMode = ScheduleMode.DATE_FIXED_TIME;
-                List<Date> datesList = getDatesParam(args);
-                String executeTime3 = getExecuteTimeParam(args);
-
+                List<String> datesList = getDatesParam(args);
+                String datesFixExecuteTime = getExecuteTimeParam(args);
+                jobRunner = new DateFixTimeJobRunner(scheduleMode,cmdList,datesFixExecuteTime,datesList);
                 break;
             default:
                 printUsageAndExit("error: schedule_mode is invalid!");

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -158,6 +159,13 @@ public final class Utils {
     }
 
     /**
+     * 当前日期
+     * */
+    public static String currentDate(){
+        return timeStampToDateTime(System.currentTimeMillis(),"yyyy-MM-dd");
+    }
+
+    /**
      * 获取下一次执行是星期几
      * @param dayInWeeksList 任务设定的执行日列表.
      * */
@@ -194,6 +202,42 @@ public final class Utils {
         long millisDelta = daysDelta * 86400000L;
 
         return Tuple.tuple(nextDayInWeek,millisDelta);
+    }
+
+    /**
+     * 获取下一次执行的日期
+     * @param datesList 任务执行日期列表.
+     * */
+    public static String getNextExecuteDate(List<String> datesList){
+        String currentDate = currentDate();
+        datesList.sort(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+
+        String nextExecuteDate = null;
+        for (String date : datesList) {
+            if(date.compareTo(currentDate) > 0){
+                nextExecuteDate = date;
+                break;
+            }
+        }
+
+        return nextExecuteDate;
+    }
+
+    /**
+     * convert List<String> to String.
+     * */
+    public static String datesListAsString(List<String> datesList){
+        StringBuilder sb = new StringBuilder();
+        for (String s : datesList) {
+            sb.append(s);
+            sb.append(" ");
+        }
+        return sb.toString();
     }
 
     /**

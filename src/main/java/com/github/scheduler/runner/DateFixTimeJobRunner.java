@@ -8,22 +8,27 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 
-public class DayInWeekJobRunner extends JobRunner{
-    private static final Logger LOG = LogManager.getLogger(DayInWeekJobRunner.class);
+public class DateFixTimeJobRunner extends JobRunner{
+    private static final Logger LOG = LogManager.getLogger(DateFixTimeJobRunner.class);
     private final String executeTime;
-    private final List<String> dayInWeeksList;
+    private final List<String> datesList;
     private boolean jobExecuteFlag;
 
-    public DayInWeekJobRunner(ScheduleMode scheduleMode, List<String> cmdList, String executeTime,List<String> dayInWeeksList){
+    public DateFixTimeJobRunner(ScheduleMode scheduleMode, List<String> cmdList, String executeTime,List<String> datesList){
         super(scheduleMode,cmdList);
         this.executeTime = executeTime;
-        this.dayInWeeksList = dayInWeeksList;
+        this.datesList = datesList;
     }
 
     @Override
     public void init(){
         this.shell = new Shell.ShellCommandExecutor(Utils.cmdListToArray(this.cmdList));
         this.jobExecuteFlag = false;
+    }
+
+    @Override
+    public void setResponseHandler(JobResponseHandler handler) {
+        this.handler = handler;
     }
 
     @Override
@@ -34,14 +39,14 @@ public class DayInWeekJobRunner extends JobRunner{
 
         long preDailyStartTimeStamp = Utils.dailyStartTimeStamp();
 
-        while(true){
-            String currentDayInWeek = Utils.currentDayInWeek();
+        while (true){
+            String currentDate = Utils.currentDate();
 
-            if(dayInWeeksList.contains(currentDayInWeek)){
+            if(datesList.contains(currentDate)){
                 long dailyExecuteTimeStamp = Utils.dailyStartTimeStamp() + theSecondOfDay;
 
                 if(!jobExecuteFlag && System.currentTimeMillis() >= dailyExecuteTimeStamp){
-                    DailyJobThread dailyJobThread = new DailyJobThread("day_in_week_job") {
+                    DailyJobThread dailyJobThread = new DailyJobThread("date_fix_time_job") {
                         @Override
                         public void run() {
                             try{
@@ -83,12 +88,18 @@ public class DayInWeekJobRunner extends JobRunner{
                     Utils.sleepQuietly(60 * 1000L);
                 }
             }else{
-                Tuple<String,Long> tuple = Utils.getNextExecuteDayInWeek(dayInWeeksList);
-                long nextExecuteTimeStamp = Utils.dailyStartTimeStamp() + theSecondOfDay;
-                long millsDelta = tuple.v2() + (nextExecuteTimeStamp - System.currentTimeMillis());
+                String nextExecuteDate = Utils.getNextExecuteDate(datesList);
+                if(nextExecuteDate == null){
+                    LOG.info("no more job to execute in dates:{}!",Utils.datesListAsString(datesList));
+                    break;
+                }
+
+                long nextExecuteTimeStamp = Utils.dateParse("yyyy-MM-dd",nextExecuteDate).getTime() + theSecondOfDay;
+                long millsDelta = nextExecuteTimeStamp - System.currentTimeMillis();
                 StringBuilder sb = new StringBuilder();
                 Utils.appendPosixTime(sb,(int)millsDelta);
                 LOG.info("time to wait before next execute: {}",sb.toString());
+
                 Utils.sleepQuietly(60 * 1000L);
             }
 
@@ -98,11 +109,6 @@ public class DayInWeekJobRunner extends JobRunner{
                 jobExecuteFlag = false;
             }
         }
-    }
-
-    @Override
-    public void setResponseHandler(JobResponseHandler handler) {
-        this.handler = handler;
     }
 
     @Override
