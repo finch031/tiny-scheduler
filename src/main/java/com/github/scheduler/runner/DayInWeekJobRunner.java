@@ -68,7 +68,8 @@ public class DayInWeekJobRunner extends JobRunner{
                     dailyJobThread.start();
                     jobExecuteFlag = true;
                 }else{
-                    long nextExecuteTimeStamp = Utils.nextDayStartTimeStamp() + theSecondOfDay;
+                    Tuple<String,Long> tuple = Utils.getNextExecuteDayInWeek(dayInWeeksList);
+                    long nextExecuteTimeStamp = tuple.v2() + Utils.dailyStartTimeStamp() + theSecondOfDay;
 
                     if(!jobExecuteFlag){
                         nextExecuteTimeStamp = Utils.dailyStartTimeStamp() + theSecondOfDay;

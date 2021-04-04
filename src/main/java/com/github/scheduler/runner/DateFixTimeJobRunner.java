@@ -73,7 +73,12 @@ public class DateFixTimeJobRunner extends JobRunner{
                     dailyJobThread.start();
                     jobExecuteFlag = true;
                 }else{
-                    long nextExecuteTimeStamp = Utils.nextDayStartTimeStamp() + theSecondOfDay;
+                    String nextExecuteDate = Utils.getNextExecuteDate(datesList);
+                    if(nextExecuteDate == null){
+                        LOG.info("no more job to execute in dates:{}!",Utils.datesListAsString(datesList));
+                        break;
+                    }
+                    long nextExecuteTimeStamp = Utils.dateParse("yyyy-MM-dd",nextExecuteDate).getTime() + theSecondOfDay;
 
                     if(!jobExecuteFlag){
                         nextExecuteTimeStamp = Utils.dailyStartTimeStamp() + theSecondOfDay;

@@ -8,9 +8,9 @@ import java.util.List;
 public class App {
 
     public static void main(String[] args){
-        // Tuple<String,Long> tuple = Utils.getNextExecuteDayInWeek(Arrays.asList("sunday","wednesday","monday"));
-        // System.out.println(tuple.v1());
-        // System.out.println(tuple.v2());
+        Tuple<String,Long> tuple = Utils.getNextExecuteDayInWeek(Arrays.asList("tuesday","saturday","thursday"));
+        System.out.println(tuple.v1());
+        System.out.println(tuple.v2());
 
         List<String> datesList = new ArrayList<>();
         datesList.add("2021-03-15");
