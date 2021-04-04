@@ -28,6 +28,8 @@ public final class Utils {
             "[0-2][0-9]:[0-5][0-9]:[0-5][0-9]"
     );
 
+    private static final String[] WEEK_DAYS = {"sunday","monday","tuesday","wednesday","thursday","friday","saturday"};
+
     // no instance.
     private Utils(){}
 
@@ -141,6 +143,57 @@ public final class Utils {
     public static int theSecondOfDay(String timeStr){
         LocalTime localTime = LocalTime.parse(timeStr);
         return localTime.toSecondOfDay();
+    }
+
+    /**
+     * 获取当天是星期几
+     * */
+    public static String currentDayInWeek(){
+        Calendar calendar = Calendar.getInstance();
+        int dayInWeekCode = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        if(dayInWeekCode < 0){
+            dayInWeekCode = 0;
+        }
+        return WEEK_DAYS[dayInWeekCode];
+    }
+
+    /**
+     * 获取下一次执行是星期几
+     * @param dayInWeeksList 任务设定的执行日列表.
+     * */
+    public static Tuple<String,Long> getNextExecuteDayInWeek(List<String> dayInWeeksList){
+        Calendar calendar = Calendar.getInstance();
+        int dayInWeekCode = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        if(dayInWeekCode < 0){
+            dayInWeekCode = 0;
+        }
+
+        String nextDayInWeek = null;
+
+        int daysDelta = 0;
+        // 当周
+        for(int i = dayInWeekCode + 1; i < WEEK_DAYS.length; i++){
+            daysDelta++;
+            if(dayInWeeksList.contains(WEEK_DAYS[i])){
+                nextDayInWeek = WEEK_DAYS[i];
+                break;
+            }
+        }
+
+        // 下周
+        if(nextDayInWeek == null){
+            for(int i = 0; i < dayInWeekCode; i++){
+                daysDelta++;
+                if(dayInWeeksList.contains(WEEK_DAYS[i])){
+                    nextDayInWeek = WEEK_DAYS[i];
+                    break;
+                }
+            }
+        }
+
+        long millisDelta = daysDelta * 86400000L;
+
+        return Tuple.tuple(nextDayInWeek,millisDelta);
     }
 
     /**

@@ -2,10 +2,7 @@ package com.github.scheduler;
 
 import com.github.scheduler.model.JobResponse;
 import com.github.scheduler.model.JobResponseHandler;
-import com.github.scheduler.runner.DailyFixTimeJobRunner;
-import com.github.scheduler.runner.FixRateJobRunner;
-import com.github.scheduler.runner.JobRunner;
-import com.github.scheduler.runner.OnceJobRunner;
+import com.github.scheduler.runner.*;
 import com.github.scheduler.utils.ScheduleMode;
 import com.github.scheduler.utils.Utils;
 import org.apache.logging.log4j.LogManager;
@@ -254,8 +251,8 @@ public class TinyScheduler {
             case 4:
                 scheduleMode = ScheduleMode.DAY_IN_WEEK_FIXED_TIME;
                 List<String> dayInWeeksList = getDayInWeeksParam(args);
-                String executeTime2 = getExecuteTimeParam(args);
-
+                String dayInWeekExecuteTime = getExecuteTimeParam(args);
+                jobRunner = new DayInWeekJobRunner(scheduleMode,cmdList,dayInWeekExecuteTime,dayInWeeksList);
                 break;
             case 5:
                 scheduleMode = ScheduleMode.DATE_FIXED_TIME;
