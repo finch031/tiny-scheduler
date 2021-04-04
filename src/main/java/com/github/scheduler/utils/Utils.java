@@ -258,6 +258,8 @@ public final class Utils {
             buf.append(daysNum);
             buf.append("days,");
             millis = (int)(transMillis - daysNum * MILLIS_ONE_DAY);
+        }else{
+            millis = (int)transMillis;
         }
 
         if (millis < 0) {
