@@ -78,16 +78,16 @@ public class DateFixTimeJobRunner extends JobRunner{
                         LOG.info("no more job to execute in dates:{}!",Utils.datesListAsString(datesList));
                         break;
                     }
-                    long nextExecuteTimeStamp = Utils.dateParse("yyyy-MM-dd",nextExecuteDate).getTime() + theSecondOfDay;
 
+                    long nextExecuteTimeStamp = Utils.dateParse("yyyy-MM-dd",nextExecuteDate).getTime() + theSecondOfDay;
                     if(!jobExecuteFlag){
                         nextExecuteTimeStamp = Utils.dailyStartTimeStamp() + theSecondOfDay;
                     }
 
                     long millsDelta = nextExecuteTimeStamp - System.currentTimeMillis();
-
                     StringBuilder sb = new StringBuilder();
-                    Utils.appendPosixTime(sb,(int)millsDelta);
+
+                    Utils.appendPosixTime(sb,millsDelta);
                     LOG.info("time to wait before next execute: {}",sb.toString());
 
                     Utils.sleepQuietly(60 * 1000L);
@@ -102,7 +102,7 @@ public class DateFixTimeJobRunner extends JobRunner{
                 long nextExecuteTimeStamp = Utils.dateParse("yyyy-MM-dd",nextExecuteDate).getTime() + theSecondOfDay;
                 long millsDelta = nextExecuteTimeStamp - System.currentTimeMillis();
                 StringBuilder sb = new StringBuilder();
-                Utils.appendPosixTime(sb,(int)millsDelta);
+                Utils.appendPosixTime(sb,millsDelta);
                 LOG.info("time to wait before next execute: {}",sb.toString());
 
                 Utils.sleepQuietly(60 * 1000L);

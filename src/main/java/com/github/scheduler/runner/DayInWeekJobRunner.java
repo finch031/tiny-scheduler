@@ -78,7 +78,7 @@ public class DayInWeekJobRunner extends JobRunner{
                     long millsDelta = nextExecuteTimeStamp - System.currentTimeMillis();
 
                     StringBuilder sb = new StringBuilder();
-                    Utils.appendPosixTime(sb,(int)millsDelta);
+                    Utils.appendPosixTime(sb,millsDelta);
                     LOG.info("time to wait before next execute: {}",sb.toString());
 
                     Utils.sleepQuietly(60 * 1000L);
@@ -88,7 +88,7 @@ public class DayInWeekJobRunner extends JobRunner{
                 long nextExecuteTimeStamp = Utils.dailyStartTimeStamp() + theSecondOfDay;
                 long millsDelta = tuple.v2() + (nextExecuteTimeStamp - System.currentTimeMillis());
                 StringBuilder sb = new StringBuilder();
-                Utils.appendPosixTime(sb,(int)millsDelta);
+                Utils.appendPosixTime(sb,millsDelta);
                 LOG.info("time to wait before next execute: {}",sb.toString());
                 Utils.sleepQuietly(60 * 1000L);
             }

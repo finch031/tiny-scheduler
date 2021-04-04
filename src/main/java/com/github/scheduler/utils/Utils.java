@@ -31,6 +31,8 @@ public final class Utils {
 
     private static final String[] WEEK_DAYS = {"sunday","monday","tuesday","wednesday","thursday","friday","saturday"};
 
+    private static final long MILLIS_ONE_DAY = 86400000L;
+
     // no instance.
     private Utils(){}
 
@@ -199,7 +201,7 @@ public final class Utils {
             }
         }
 
-        long millisDelta = daysDelta * 86400000L;
+        long millisDelta = daysDelta * MILLIS_ONE_DAY;
 
         return Tuple.tuple(nextDayInWeek,millisDelta);
     }
@@ -245,9 +247,19 @@ public final class Utils {
      * "hh[:mm[:ss]]".
      *
      * @param buf    Buffer to append to
-     * @param millis Milliseconds
+     * @param transMillis Milliseconds
      */
-    public static void appendPosixTime(StringBuilder buf, int millis) {
+    public static void appendPosixTime(StringBuilder buf, long transMillis) {
+        int millis = 0;
+
+        if(transMillis > MILLIS_ONE_DAY){
+            long temp = transMillis % MILLIS_ONE_DAY;
+            long daysNum = (transMillis - temp) / MILLIS_ONE_DAY;
+            buf.append(daysNum);
+            buf.append("days,");
+            millis = (int)(transMillis - daysNum * MILLIS_ONE_DAY);
+        }
+
         if (millis < 0) {
             buf.append('-');
             millis = -millis;
@@ -275,7 +287,6 @@ public final class Utils {
         }
         buf.append(seconds);
     }
-
 
     /**
      * Ensures that an object reference passed as a parameter to the calling method is not null.

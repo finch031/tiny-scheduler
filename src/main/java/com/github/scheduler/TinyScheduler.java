@@ -161,7 +161,9 @@ public class TinyScheduler {
                     printUsageAndExit("error: date is invalid: " + s);
                 }
             }
-            printUsageAndExit("error: ---dates is empty!");
+            if(datesList.isEmpty()){
+                printUsageAndExit("error: ---dates is empty!");
+            }
         }else{
             printUsageAndExit("error: ---dates not found!");
         }
