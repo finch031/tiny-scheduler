@@ -85,7 +85,7 @@ public class TinyScheduler {
         int index = paramIndexSearch(args,"---timeunit");
         if(index != -1){
             String timeUnitStr = args[index+1];
-            switch (timeUnitStr){
+            switch (timeUnitStr.toLowerCase()){
                 case "milliseconds" :
                     timeUnit = TimeUnit.MILLISECONDS;
                     break;
@@ -104,7 +104,7 @@ public class TinyScheduler {
             }
 
             if(timeUnit == null){
-                printUsageAndExit("error: timeunit is invalid!");
+                printUsageAndExit("error: timeunit is invalid:" + timeUnitStr);
             }
         }else {
             printUsageAndExit("error: ---timeunit not found!");
@@ -133,7 +133,7 @@ public class TinyScheduler {
             }
 
             if(dayInWeeksList.isEmpty()){
-                printUsageAndExit("error: ---day_in_weeks is empty!");
+                printUsageAndExit("error: ---day_in_weeks is empty:" + tempStr);
             }
         }else{
             printUsageAndExit("error: ---day_in_weeks not found!");
@@ -155,14 +155,14 @@ public class TinyScheduler {
                     if(date != null){
                         datesList.add(s);
                     }else{
-                        printUsageAndExit("error: date is invalid: " + s);
+                        printUsageAndExit("error: date is invalid:" + s);
                     }
                 }else{
-                    printUsageAndExit("error: date is invalid: " + s);
+                    printUsageAndExit("error: date is invalid:" + s);
                 }
             }
             if(datesList.isEmpty()){
-                printUsageAndExit("error: ---dates is empty!");
+                printUsageAndExit("error: ---dates is empty:" + tempStr);
             }
         }else{
             printUsageAndExit("error: ---dates not found!");
@@ -203,7 +203,7 @@ public class TinyScheduler {
                scheduleModeStr.equals("5")){
                 scheduleModeCode = Integer.parseInt(scheduleModeStr);
             }else {
-                printUsageAndExit("error: schedule_mode is invalid!");
+                printUsageAndExit("error: schedule_mode is invalid:" + scheduleModeStr);
             }
         }else{
             printUsageAndExit("error: ---schedule_mode not found!");
@@ -285,9 +285,10 @@ public class TinyScheduler {
             jobRunner.setResponseHandler(new JobResponseHandler() {
                 @Override
                 public void handler(JobResponse jobResponse) {
-                    System.out.println(jobResponse);
                     LOG.info(jobResponse);
                     //TODO
+
+                    System.out.println(jobResponse);
                 }
             });
 

@@ -1,5 +1,7 @@
 package com.github.scheduler.utils;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -337,6 +339,16 @@ public final class Utils {
         }catch (InterruptedException ie){
             // ignore.
         }
+    }
+
+    /**
+     * Get the stack trace from an exception as a string
+     */
+    public static String stackTrace(Throwable e) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        e.printStackTrace(pw);
+        return sw.toString();
     }
 
 }

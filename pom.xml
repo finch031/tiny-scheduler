@@ -327,12 +327,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>log4j2.properties</include>
-                    <include>spark_yarn.properties</include>
-                    <include>application.conf</include>
                 </includes>
-                <excludes>
-                    <exclude>sample.dat</exclude>
-                </excludes>
             </resource>
         </resources>
     </build>

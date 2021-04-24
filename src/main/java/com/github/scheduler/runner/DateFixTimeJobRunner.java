@@ -42,6 +42,9 @@ public class DateFixTimeJobRunner extends JobRunner{
         while (true){
             String currentDate = Utils.currentDate();
 
+            // seconds sleep before next check.
+            long secondsSleep;
+
             if(datesList.contains(currentDate)){
                 long dailyExecuteTimeStamp = Utils.dailyStartTimeStamp() + theSecondOfDay;
 
@@ -65,7 +68,8 @@ public class DateFixTimeJobRunner extends JobRunner{
                                 handler.handler(jobResponse);
 
                             }catch (Exception e){
-                                e.printStackTrace();
+                                String errorMsg = Utils.stackTrace(e);
+                                LOG.error(errorMsg);
                             }
                         }
                     };
@@ -90,7 +94,18 @@ public class DateFixTimeJobRunner extends JobRunner{
                     Utils.appendPosixTime(sb,millsDelta);
                     LOG.info("time to wait before next execute: {}",sb.toString());
 
-                    Utils.sleepQuietly(60 * 1000L);
+                    if(millsDelta > 3600 * 1000L){
+                        // 50min.
+                        secondsSleep = 3000L;
+                    }else if(millsDelta > 600 * 1000L){
+                        // 10min.
+                        secondsSleep = 600L;
+                    }else{
+                        // 10s.
+                        secondsSleep = 10L;
+                    }
+
+                    Utils.sleepQuietly(secondsSleep * 1000L);
                 }
             }else{
                 String nextExecuteDate = Utils.getNextExecuteDate(datesList);
@@ -105,7 +120,18 @@ public class DateFixTimeJobRunner extends JobRunner{
                 Utils.appendPosixTime(sb,millsDelta);
                 LOG.info("time to wait before next execute: {}",sb.toString());
 
-                Utils.sleepQuietly(60 * 1000L);
+                if(millsDelta > 3600 * 1000L){
+                    // 50min.
+                    secondsSleep = 3000L;
+                }else if(millsDelta > 600 * 1000L){
+                    // 10min.
+                    secondsSleep = 600L;
+                }else{
+                    // 10s.
+                    secondsSleep = 10L;
+                }
+
+                Utils.sleepQuietly(secondsSleep * 1000L);
             }
 
             // 跨天重置.

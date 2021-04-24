@@ -1,8 +1,11 @@
 package com.github.scheduler.utils;
 
 import com.github.scheduler.model.JobResponse;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public abstract class WrappedRunnable implements Runnable{
+    private static final Logger LOG = LogManager.getLogger(WrappedRunnable.class);
     private JobResponse response;
 
     public JobResponse getResponse(){
@@ -14,7 +17,8 @@ public abstract class WrappedRunnable implements Runnable{
         try{
             this.response = doWork();
         }catch (Exception e){
-            e.printStackTrace();
+            String errorMsg = Utils.stackTrace(e);
+            LOG.error(errorMsg);
         }
 
     }

@@ -6,11 +6,14 @@ import com.github.scheduler.utils.ExecutorServiceUtil;
 import com.github.scheduler.utils.ScheduleMode;
 import com.github.scheduler.utils.Shell;
 import com.github.scheduler.utils.Utils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.List;
 import java.util.concurrent.*;
 
 public class OnceJobRunner extends JobRunner{
+    private static final Logger LOG = LogManager.getLogger(OnceJobRunner.class);
     private final long delay;
     private final TimeUnit timeUnit;
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
@@ -71,7 +74,8 @@ public class OnceJobRunner extends JobRunner{
             wrapper.waitTillDone();
             jobResponse = wrapper.get();
         }catch (Exception ex){
-            ex.printStackTrace();
+            String errorMsg = Utils.stackTrace(ex);
+            LOG.error(errorMsg);
         }
 
         handler.handler(jobResponse);
